@@ -1,14 +1,17 @@
 package main
 
-import "github.com/gofiber/fiber/v2"
+import (
+	"github.com/gofiber/fiber/v2"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
+)
 
 func main() {
-	/* dsn := "root:password@tcp(localhost:3306)/ambassador" // Replace password and adjust host/port as needed
-	_, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	_, err := gorm.Open(mysql.Open("root:root@tcp(db:3306)/ambassador"), &gorm.Config{})
 
 	if err != nil {
 		panic("Could not connect with the database")
-	} */
+	}
 
 	app := fiber.New()
 
