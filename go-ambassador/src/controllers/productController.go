@@ -1,15 +1,16 @@
 package controllers
 
 import (
-	"strconv"
 	"ambassador/src/database"
 	"ambassador/src/models"
+	"strconv"
+
 	"github.com/gofiber/fiber/v2"
 )
 
 func Products(c *fiber.Ctx) error {
 	var products []models.Product
-	
+
 	database.DB.Find(&products)
 
 	return c.JSON(products)
@@ -21,7 +22,7 @@ func CreateProducts(c *fiber.Ctx) error {
 	if err := c.BodyParser(&product); err != nil {
 		return err
 	}
-	
+
 	database.DB.Create(&product)
 
 	return c.JSON(product)
