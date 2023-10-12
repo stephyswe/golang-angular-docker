@@ -9,8 +9,12 @@ Run on WSL Ubuntu - ang-go
 Fix 
 go get -u golang.org/x/tools/gopls
 ```
+1. Introduction
+```
+...
+```
 
-1. Setup
+2. Setup
     
     ```erlang
     # Windows Install 
@@ -90,7 +94,19 @@ go get -u golang.org/x/tools/gopls
     
     sudo docker-compose up --build
     ```
-        
+
+7. Admin Authentication Endpoints
+    ```erlang
+    # Endpoint - api/admin/
+
+    # POST - register
+    # POST - login
+    # GET- user
+    # POST - logout
+    # PUT - /users/info
+    # PUT - /users/password
+    ```
+
 8. Routes
     
     ```erlang
@@ -241,4 +257,314 @@ go get -u golang.org/x/tools/gopls
         "last_name": "a",
         "email": "a@a.com"
     }
+    ```
+15. Logout
+    
+    ```erlang
+    POST - http://localhost:8000/api/admin/logout
+    {  "message": "success" } - COOKIE
+    ```
+    
+16. Middlewares
+    
+    ```erlang
+    # All Routes - Recheck
+    
+    > authController
+    > auth
+    > routes
+    ```
+    
+17. Profile
+    
+    ```erlang
+    
+    # 1. Update UserInfo
+    
+    # PUT - /admin/users/info
+    """
+    {
+        "first_name": "b",
+        "last_name": "b",
+        "email": "b@b.com"
+    }
+    ...
+    {
+        "id": 4,
+        "first_name": "bab",
+        "last_name": "ba",
+        "email": "baba@b.com"
+    }
+    """
+    
+    # GET - /admin/user
+    """
+    {
+        "id": 4,
+        "first_name": "bab",
+        "last_name": "ba",
+        "email": "baba@b.com"
+    }
+    """
+    
+    # 2. Update Password
+    # PUT - /admin/users/password
+    """
+    {
+        "password": "b",
+        "password_confirm": "b"
+    }
+    ...
+    {
+        "id": 4,
+        "first_name": "",
+        "last_name": "",
+        "email": ""
+    }
+    """
+    
+    # POST - /admin/login
+    """
+    {
+        "password": "b",
+        "password_confirm": "b"
+    }
+    ...
+    { "message": "success" }
+    
+    ```
+
+18. Admin Endpoints
+    
+    ```erlang
+    # Endpoint - api/admin/
+    
+    # GET/POST - products
+    # GET/PUT/DELETE - products/:id
+    # GET - users/:id/links
+    # GET - orders
+    # GET - ambassadors
+    ```
+
+19. Ambassadors
+    
+    ```erlang
+    go get github.com/bxcodec/faker/v3@v3.6.0
+    # Error - Run Command PopulateUser
+    go run src/commands/populateUsers.go - # Fails DB error
+    ...
+    # Solution - Run PopulateUser inside Docker
+    docker-compose exec backend sh
+    # go run src/commands/populateUsers.go
+    
+    # /admin/ambassadors - #Shows 30 entities
+    
+    ```
+    
+20. Products
+    
+    ```erlang
+    # Endpoints
+    # Get Products - GET - /admin/products 
+    # Get Product - GET - /admin/products/1
+    # Create Products - POST - /admin/products
+    # Update Product - PUT - admin/products/1
+    # Delete Product - DEL - admin/products/1
+    
+    # Get Products - # []
+    
+    # Create Products
+    """
+    {
+        "title": "",
+        "description": "b",
+        "image": "img",
+        "price": 10
+    }
+    ...
+    {
+        "id": 1,
+        "title": "title",
+        "description": "desc",
+        "image": "img",
+        "price": 10
+    }
+    """
+    # Get Product
+    """
+    {
+    		"id": 1,
+        "title": "",
+        "description": "b",
+        "image": "img",
+        "price": 10
+    }
+    """
+    
+    # Update Product
+    """
+    {
+        "title": "title",
+        "description": "desc 2",
+        "image": "img 2",
+        "price": 20
+    }
+    ...
+    {
+        "id": 1,
+        "title": "title3",
+        "description": "",
+        "image": "",
+        "price": 0
+    }
+    """
+    
+    # Delete Product - # []
+    
+     
+    
+    ```
+    
+21. Embedded Structs (model ID, runProducts)
+    
+    ```erlang
+    #  Run PopulateProducts inside Docker
+    docker-compose exec backend sh
+    # go run src/commands/populateProducts.go
+    
+    # /admin/products - #Shows 30 entities
+    ```
+    
+22. Links
+    
+    ```erlang
+    # /admin/users/1/links - # []
+    ```
+    
+23. Orders
+    
+    ```erlang
+    #  Run populateOrders inside Docker
+    docker-compose exec backend sh
+    # go run src/commands/populateOrders.go
+    
+    # GET - /orders - #Shows 30 entities - order_item is null
+    """
+    {
+            "id": 1,
+            "transaction_id": "",
+            "user_id": 17,
+            "code": "fsQpDHO",
+            "ambassador_email": "HjDyGrm@GomdfJF.com",
+            "name": "",
+            "email": "oLUVnCK@mlWSsuk.net",
+            "address": "",
+            "city": "",
+            "country": "",
+            "zip": "",
+            "order_item": null
+        },
+    """
+    ```
+    
+24. Preloading
+    
+    ```erlang
+    # GET - /orders - #Shows 30 entities - order_item too
+    """
+    {
+            "id": 1,
+            "transaction_id": "",
+            "user_id": 17,
+            "code": "fsQpDHO",
+            "ambassador_email": "HjDyGrm@GomdfJF.com",
+            "name": "",
+            "email": "oLUVnCK@mlWSsuk.net",
+            "address": "",
+            "city": "",
+            "country": "",
+            "zip": "",
+            "order_items": [
+                {
+                    "id": 1,
+                    "order_id": 1,
+                    "product_title": "dolorum",
+                    "price": 60,
+                    "quantity": 2,
+                    "admin_revenue": 108,
+                    "ambassador_revenue": 12
+                },
+                {
+                    "id": 2,
+                    "order_id": 1,
+                    "product_title": "debitis",
+                    "price": 32,
+                    "quantity": 0,
+                    "admin_revenue": 0,
+                    "ambassador_revenue": 0
+                },
+                {
+                    "id": 3,
+                    "order_id": 1,
+                    "product_title": "aliquam",
+                    "price": 92,
+                    "quantity": 3,
+                    "admin_revenue": 248.39999999999998,
+                    "ambassador_revenue": 27.6
+                }
+            ]
+        },
+    """
+    
+    # Methods FulLname & GetTotal
+    # GET - /orders
+    """
+    {
+            "id": 1,
+            ...
+            "name": "Murphy Upton",
+    				...
+            "total": 396,
+            "order_items": [...]
+        },
+    """
+    
+    # Method Orders in Links
+    # GET - /users/10/links - # []
+    ```
+    
+25. Ambassador Authentication Endpoints
+    
+    ```erlang
+    # Endpoint - api/ambassadors/
+    
+    # POST - register
+    # POST - login
+    # GET- user
+    # POST - logout
+    # PUT - /users/info
+    # PUT - /users/password
+    ```
+    
+26. Multiple Routes
+    
+    ```erlang
+    # POST - register
+    """
+    {
+        "first_name": "ab",
+        "last_name": "ab",
+        "email": "d@d.com",
+        "password": "a",
+        "password_confirm": "a"
+    }
+    ...
+    {
+        "id": 42,
+        "first_name": "ab",
+        "last_name": "ab",
+        "email": "d@d.com"
+    }
+    """
+    
     ```
